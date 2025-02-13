@@ -3,8 +3,10 @@
 <h2>Your expenses</h2>
 <a href="{% url 'add_expense' %}">Add Expense</a>
 <ul>
-    {% for expense in expenses %}
-        <li>{{ expense.data }} - {{ expense.kategoria }}: {{ expense.kwota|floatformat:2 }} zł</li>
+    {% for expense in expenses|dictsortreversed:"date" %}
+        <li>{{ expense.date }} - {{ expense.category }}: {{ expense.amount|floatformat:2 }} zł
+            <a href="{% url 'delete_expense' expense.id %}">Delete</a>
+        </li>
     {% endfor %}
 </ul>
 {% endblock %}
