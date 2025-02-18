@@ -37,3 +37,6 @@ def custom_logout(request):
         logout(request)
         return redirect('account_login')
     return redirect('account_login')
+
+def home(request):
+    return render(request, 'home.html')

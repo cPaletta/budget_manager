@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LogoutView
 from django.contrib import messages
-from expenses.views import custom_logout
+from expenses.views import custom_logout, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('expenses/', include('expenses.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('allauth.urls')),
-    path('accounts/', custom_logout, name='account_logout'),
+    path('accounts/logout/', custom_logout, name='account_logout'),
+    path('', home, name='home'),
 ]
