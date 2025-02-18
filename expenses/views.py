@@ -3,6 +3,7 @@ from .models import Expense
 from .forms import ExpenseForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth import logout
 
 @login_required
 def add_expense(request):
@@ -32,5 +33,7 @@ def delete_expense(request, expense_id):
     return render(request, 'confirm_delete.html', {'expense': expense})
 
 def custom_logout(request):
-    messages.success(request, 'You have successfully logged out.')
-    return redirect('expense_list')
+    if request.method == 'POST':
+        logout(request)
+        return redirect('account_login')
+    return redirect('account_login')
