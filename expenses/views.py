@@ -4,6 +4,9 @@ from .forms import ExpenseForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from datetime import datetime
 
 @login_required
 def add_expense(request):
@@ -20,8 +23,19 @@ def add_expense(request):
 
 @login_required
 def expense_list(request):
-    expenses = Expense.objects.filter(user=request.user)
-    return render(request, 'list.html', {'expenses': expenses})
+    selected_year = int(request.GET.get('year', datetime.now().year))
+    expenses = Expense.objects.filter(user=request.user, date__year=selected_year)
+    monthly_totals = expenses.annotate(month=TruncMonth('date')).values('month').annotate(total=Sum('amount')).order_by('month')
+    
+    # Create a list of tuples with all months of the selected year
+    all_months = [(datetime(selected_year, month, 1), 0) for month in range(1, 13)]
+    for total in monthly_totals:
+        for i, (month, _) in enumerate(all_months):
+            if month.month == total['month'].month:
+                all_months[i] = (month, total['total'])
+    
+    years = Expense.objects.filter(user=request.user).dates('date', 'year')
+    return render(request, 'list.html', {'expenses': expenses, 'monthly_totals': all_months, 'years': years, 'selected_year': selected_year})
 
 @login_required
 def delete_expense(request, expense_id):
