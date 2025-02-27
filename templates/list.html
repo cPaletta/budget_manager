@@ -40,5 +40,42 @@
         </table>
     </div>
 </div>
+
+<h2>Expenses for the Year {{ selected_year }}</h2>
+<canvas id="expensesChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('expensesChart').getContext('2d');
+    var expensesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: JSON.parse('{{ chart_labels|escapejs }}'),
+            datasets: [{
+                label: 'Expenses',
+                data: JSON.parse('{{ chart_data|escapejs }}'),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Amount (zł)'
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
 

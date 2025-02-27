@@ -7,6 +7,8 @@ from django.contrib.auth import logout
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
 from datetime import datetime
+import json
+from decimal import Decimal
 
 @login_required
 def add_expense(request):
@@ -35,7 +37,22 @@ def expense_list(request):
                 all_months[i] = (month, total['total'])
     
     years = Expense.objects.filter(user=request.user).dates('date', 'year')
-    return render(request, 'list.html', {'expenses': expenses, 'monthly_totals': all_months, 'years': years, 'selected_year': selected_year})
+    
+    # Data for the chart
+    chart_data = {month.strftime('%Y-%m'): 0 for month, _ in all_months}
+    for total in monthly_totals:
+        month_str = total['month'].strftime('%Y-%m')
+        if month_str in chart_data:
+            chart_data[month_str] = float(total['total'])  # Convert Decimal to float
+    
+    return render(request, 'list.html', {
+        'expenses': expenses,
+        'monthly_totals': all_months,
+        'years': years,
+        'selected_year': selected_year,
+        'chart_labels': json.dumps(list(chart_data.keys())),
+        'chart_data': json.dumps(list(chart_data.values()))
+    })
 
 @login_required
 def delete_expense(request, expense_id):
