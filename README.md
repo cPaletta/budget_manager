@@ -18,22 +18,27 @@ Budget Manager is a Django-based web application that helps users manage their e
    cd budget_manager
    ```
 
-2. Apply the migrations:
+2. Install the required dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
+
+3. Apply the migrations:
    ```sh
    python manage.py migrate
    ```
 
-3. Create a superuser:
+4. Create a superuser:
    ```sh
    python manage.py createsuperuser
    ```
 
-4. Run the development server:
+5. Run the development server:
    ```sh
    python manage.py runserver
    ```
 
-5. Open your browser and go to `http://127.0.0.1:8000/` to access the application.
+6. Open your browser and go to `http://127.0.0.1:8000/` to access the application.
 
 ## Running Tests
 
